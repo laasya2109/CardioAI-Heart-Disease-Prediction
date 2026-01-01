@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardioAI - Records</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="home.html" class="logo"><i class="fas fa-heartbeat"></i> CardioAI</a>
+    <div class="nav-links">
+      <a href="home.html" class="nav-item"><i class="far fa-heart"></i> Home</a>
+      <a href="predict.html" class="nav-item"><i class="fas fa-wave-square"></i> Predict</a>
+      <a href="records.html" class="nav-item active"><i class="far fa-user"></i> Patient Records</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+      <div>
+        <span class="badge-pill" style="margin-bottom: 10px;">Doctor Dashboard</span>
+        <h1 style="color: var(--secondary);">Patient Records</h1>
+        <p style="color: var(--text-light);">View and manage all patient predictions.</p>
+      </div>
+      <a href="predict.html" class="nav-btn">New Assessment</a>
+    </div>
+
+    <!-- Dashboard Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="totalPatients">1</div>
+        <div class="stat-label">Total Patients</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color: #059669;" id="lowRiskCount">1</div>
+        <div class="stat-label">Low Risk</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-num" style="color: #DC2626;" id="highRiskCount">0</div>
+        <div class="stat-label">High Risk</div>
+      </div>
+    </div>
+
+    <!-- Search & Table -->
+    <div class="table-container">
+      <h3 style="margin-bottom: 20px;">All Patient Assessments</h3>
+      <input type="text" class="search-bar" placeholder="Search patients by name...">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Risk Level</th>
+            <th>Risk Score</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="recordsTable">
+          <!-- Example Static Row for now, JS can populate more -->
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div
+                  style="width: 35px; height: 35px; background: #E0F7FA; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                  <i class="far fa-user"></i>
+                </div>
+                John Doe
+              </div>
+            </td>
+            <td>45 yrs</td>
+            <td>Male</td>
+            <td><span class="status-tag tag-low">Low Risk</span></td>
+            <td>24%</td>
+            <td>12/29/2025</td>
+            <td><button style="border: none; background: none; color: var(--text-light); cursor: pointer;"><i
+                  class="fas fa-ellipsis-v"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

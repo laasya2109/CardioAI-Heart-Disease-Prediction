@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardioAI - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="home.html" class="logo">
+      <i class="fas fa-heartbeat"></i> CardioAI
+    </a>
+    <div class="nav-links">
+      <a href="home.html" class="nav-item active"><i class="far fa-heart"></i> Home</a>
+      <a href="predict.html" class="nav-item"><i class="fas fa-wave-square"></i> Predict</a>
+      <a href="records.html" class="nav-item"><i class="far fa-user"></i> Patient Records</a>
+      <a href="index.html" class="nav-btn">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <div class="hero-section">
+      <span class="badge-pill">
+        <i class="fas fa-robot"></i> AI-Powered Heart Health Assessment
+      </span>
+
+      <h1 class="hero-title">
+        Predict Heart Disease<br>
+        <span>Before It's Too Late</span>
+      </h1>
+
+      <p class="hero-desc">
+        Our advanced AI analyzes your health metrics to predict cardiovascular risks and provides personalized
+        recommendations to keep your heart healthy.
+      </p>
+
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <a href="predict.html" class="btn-primary" style="width: auto; padding: 14px 30px; text-decoration: none;">
+          Start Prediction <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+        </a>
+        <a href="records.html" class="btn-primary"
+          style="width: auto; padding: 14px 30px; background: white; color: var(--text-main); border: 1px solid var(--border); box-shadow: none; text-decoration: none;">
+          View Patient Records
+        </a>
+      </div>
+
+      <!-- Features -->
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-brain"></i></div>
+          <h3>AI-Powered Analysis</h3>
+          <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 10px;">
+            Advanced machine learning algorithms analyze your health data with high precision.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+          <h3>Instant Results</h3>
+          <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 10px;">
+            Get your risk assessment in seconds, not days. Fast and reliable processing.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>Personalized Care</h3>
+          <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 10px;">
+            Receive tailored health recommendations specifically for your condition.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Stats -->
+    <div
+      style="display: flex; justify-content: space-around; margin-top: 60px; border-top: 1px solid var(--border); padding-top: 40px; text-align: center;">
+      <div>
+        <h2 style="color: var(--primary); font-size: 2.5rem;">87%</h2>
+        <p style="font-size: 0.9rem; color: var(--text-light);">Accuracy Rate</p>
+      </div>
+      <div>
+        <h2 style="color: var(--primary); font-size: 2.5rem;">10K+</h2>
+        <p style="font-size: 0.9rem; color: var(--text-light);">Predictions Made</p>
+      </div>
+      <div>
+        <h2 style="color: var(--primary); font-size: 2.5rem;">500+</h2>
+        <p style="font-size: 0.9rem; color: var(--text-light);">Doctors Trust Us</p>
+      </div>
+      <div>
+        <h2 style="color: var(--primary); font-size: 2.5rem;">24/7</h2>
+        <p style="font-size: 0.9rem; color: var(--text-light);">Available</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

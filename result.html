@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardioAI - Assessment Report</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Specific Styles for Report Layout */
+    .patient-header-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border);
+    }
+
+    .patient-info {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .patient-avatar {
+      width: 60px;
+      height: 60px;
+      background: #E0F7FA;
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+    }
+
+    .report-date {
+      text-align: right;
+    }
+
+    /* Risk Assessment Box */
+    .risk-box {
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      border-radius: var(--radius);
+      padding: 40px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .risk-box.safe {
+      background: #ECFDF5;
+      border: 1px solid #6EE7B7;
+    }
+
+    .risk-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 8px solid #DC2626;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      flex-shrink: 0;
+    }
+
+    .risk-circle.safe {
+      border-color: #059669;
+    }
+
+    .risk-percent {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--secondary);
+      line-height: 1;
+    }
+
+    .risk-label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    /* Recommendations Grid */
+    .rec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    @media(max-width: 768px) {
+      .risk-box {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .patient-header-card {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .report-date {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="home.html" class="logo"><i class="fas fa-heartbeat"></i> CardioAI</a>
+    <div class="nav-links">
+      <a href="home.html" class="nav-item"><i class="far fa-heart"></i> Home</a>
+      <a href="predict.html" class="nav-item"><i class="fas fa-wave-square"></i> Predict</a>
+      <a href="records.html" class="nav-item active"><i class="far fa-user"></i> Patient Records</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- 1. Patient Header -->
+    <div class="patient-header-card">
+      <div class="patient-info">
+        <div class="patient-avatar"><i class="far fa-user"></i></div>
+        <div>
+          <h2 id="r_name" style="margin-bottom: 5px; color: var(--secondary);">Guest</h2>
+          <p style="color: var(--text-light);"><span id="r_age">--</span> years old • <span id="r_sex">--</span></p>
+        </div>
+      </div>
+      <div class="report-date">
+        <div style="font-size: 0.9rem; color: var(--text-light);">Assessment Date</div>
+        <div id="r_date" style="font-weight: 600; color: var(--secondary);">--/--/----</div>
+      </div>
+    </div>
+
+    <!-- 2. Risk Assessment Hero -->
+    <div id="riskBox" class="risk-box">
+      <div class="risk-circle" id="riskCircle">
+        <span class="risk-percent" id="r_score">0%</span>
+        <span class="risk-label">Risk Score</span>
+      </div>
+      <div>
+        <div id="riskBadge" class="badge-pill" style="margin-bottom: 15px; background: #fee2e2; color: #DC2626;">High
+          Risk</div>
+        <h2 style="margin-bottom: 10px; color: var(--secondary);">Heart Disease Risk Assessment</h2>
+        <p id="r_main_text" style="color: var(--text-main);">Based on the AI analysis of your health metrics, there is a
+          significant indication of heart disease presence.</p>
+      </div>
+    </div>
+
+    <!-- 3. Key Findings (Dynamic) -->
+    <div class="section-card">
+      <div class="section-title"><i class="fas fa-search-plus"></i> Key Findings</div>
+      <div id="keyFindingsList" class="grid-2" style="gap: 15px;">
+        <!-- JS will populate -->
+        <p style="color: var(--text-light);">Clinical details not available for this record.</p>
+      </div>
+    </div>
+
+    <!-- 4. Recommendations Grid -->
+    <div id="recSection" class="rec-grid">
+
+      <!-- Dietary -->
+      <div class="section-card" style="margin-bottom: 0;">
+        <div class="section-title"><i class="fas fa-carrot"></i> Dietary Recommendations</div>
+        <ul class="advice-list">
+          <li><i class="fas fa-check-circle"></i> Adopt a Mediterranean diet rich in fruits & veggies.</li>
+          <li><i class="fas fa-check-circle"></i> Reduce intake of saturated and trans fats.</li>
+          <li><i class="fas fa-check-circle"></i> Limit sugar and processed foods.</li>
+        </ul>
+      </div>
+
+      <!-- Lifestyle -->
+      <div class="section-card" style="margin-bottom: 0;">
+        <div class="section-title"><i class="fas fa-sun"></i> Lifestyle Changes</div>
+        <ul class="advice-list">
+          <li><i class="fas fa-check-circle"></i> Quit smoking immediately if applicable.</li>
+          <li><i class="fas fa-check-circle"></i> Manage stress through yoga or meditation.</li>
+          <li><i class="fas fa-check-circle"></i> Ensure adequate sleep of 7-8 hours per night.</li>
+        </ul>
+      </div>
+
+      <!-- Exercise -->
+      <div class="section-card" style="margin-bottom: 0;">
+        <div class="section-title"><i class="fas fa-running"></i> Exercise Recommendations</div>
+        <ul class="advice-list">
+          <li><i class="fas fa-check-circle"></i> 150 mins of moderate aerobic activity per week.</li>
+          <li><i class="fas fa-check-circle"></i> Focus on brisk walking, cycling, or swimming.</li>
+          <li><i class="fas fa-check-circle"></i> Consult a doctor before starting intense regimes.</li>
+        </ul>
+      </div>
+
+      <!-- Medical -->
+      <div class="section-card" style="margin-bottom: 0;">
+        <div class="section-title"><i class="fas fa-user-md"></i> Medical Follow-up</div>
+        <ul class="advice-list">
+          <li><i class="fas fa-check-circle"></i> Schedule a check-up with a cardiologist.</li>
+          <li><i class="fas fa-check-circle"></i> Monitor blood pressure and cholesterol regularly.</li>
+          <li><i class="fas fa-check-circle"></i> Consider further diagnostic tests (ECG, Treadmill).</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Warning Signs (Only for High Risk) -->
+    <div id="warningBox" class="warning-box hidden">
+      <div class="warning-title"><i class="fas fa-exclamation-triangle"></i> Warning Signs to Watch</div>
+      <p style="margin-bottom: 15px; color: #7F1D1D;">Seek immediate medical attention if you experience:</p>
+      <div class="grid-2" style="gap: 15px;">
+        <div style="font-size: 0.9rem; color: #991B1B;"><i class="fas fa-exclamation-circle"></i> Chest pain or pressure
+        </div>
+        <div style="font-size: 0.9rem; color: #991B1B;"><i class="fas fa-exclamation-circle"></i> Shortness of breath
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const data = JSON.parse(localStorage.getItem('lastResult'));
+
+      // 1. Fill Header
+      document.getElementById('r_name').innerText = data.name || "Patient";
+      document.getElementById('r_age').innerText = data.age || "--";
+      document.getElementById('r_sex').innerText = data.sex || "--";
+      document.getElementById('r_date').innerText = data.date || new Date().toLocaleDateString();
+
+      // 2. Risk Box Logic
+      const isHighRisk = data.prediction === 1;
+      const box = document.getElementById('riskBox');
+      const circle = document.getElementById('riskCircle');
+      const badge = document.getElementById('riskBadge');
+      const mainText = document.getElementById('r_main_text');
+
+      document.getElementById('r_score').innerText = data.score + "%";
+
+      if (isHighRisk) {
+        // HIGH RISK STYLES
+        box.className = "risk-box"; // Red default
+        circle.className = "risk-circle";
+        badge.style.background = "#FEE2E2";
+        badge.style.color = "#DC2626";
+        badge.innerText = "High Risk";
+        mainText.innerText = "The analysis indicates a high probability of heart disease. Immediate medical consultation and lifestyle changes are recommended.";
+        document.getElementById('warningBox').classList.remove('hidden');
+      } else {
+        // LOW RISK STYLES
+        box.className = "risk-box safe";
+        circle.className = "risk-circle safe";
+        badge.style.background = "#D1FAE5";
+        badge.style.color = "#059669";
+        badge.innerText = "Low Risk";
+        mainText.innerText = "Great news! Your metrics do not indicate a significant risk of heart disease at this time. Keep maintaining a healthy lifestyle.";
+        document.getElementById('warningBox').classList.add('hidden');
+      }
+
+      // 3. Generate Dynamic Findings (if details exist)
+      const details = data.details;
+      const findingsDiv = document.getElementById('keyFindingsList');
+
+      if (details) {
+        findingsDiv.innerHTML = ""; // Clear default
+        let findings = [];
+
+        if (details.cp > 0) findings.push("Patient reported experiencing chest pain (Angina).");
+        if (details.trestbps > 130) findings.push(`Elevated resting blood pressure detected (${details.trestbps} mmHg).`);
+        if (details.chol > 200) findings.push(`Cholesterol levels are above optimal range (${details.chol} mg/dl).`);
+        if (details.fbs == 1) findings.push("Fasting blood sugar > 120 mg/dl suggests pre-diabetes or diabetes risk.");
+        if (details.oldpeak > 1.0) findings.push("ST depression induced by exercise relative to rest indicates potential ischemia.");
+        if (details.thal > 1) findings.push("Thalassemia defect markers observed.");
+
+        if (findings.length === 0) {
+          findingsDiv.innerHTML = `<div style="color:var(--text-light);"><i class="fas fa-check-circle" style="color:#059669"></i> No specific abnormal flags found in the provided metrics.</div>`;
+        } else {
+          findings.forEach(f => {
+            findingsDiv.innerHTML += `<div style="display:flex; gap:10px; align-items:start;"><i class="fas fa-notes-medical" style="color:var(--primary); margin-top:4px;"></i> <span>${f}</span></div>`;
+          });
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
