@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioAI - My Health</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="patient-body">
+
+    <!-- Mobile-First Header -->
+    <header class="p-header">
+        <div class="p-logo"><i class="fas fa-heartbeat"></i> CardioAI</div>
+        <button onclick="logout()" class="btn-icon-text"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </header>
+
+    <main class="p-container">
+
+        <!-- Hero Section -->
+        <section class="p-hero">
+            <div class="greeting-box">
+                <h1 id="pName">Hello, Patient</h1>
+                <p id="pDate">Today is Sunday, 12 Oct</p>
+                <div class="health-tip-bubble" id="dailyTip">
+                    <i class="far fa-lightbulb"></i> Loading tip...
+                </div>
+            </div>
+
+            <!-- Health Gauge (Centerpiece) -->
+            <div class="gauge-wrapper">
+                <div class="gauge-container">
+                    <svg viewBox="0 0 36 36" class="circular-chart orange">
+                        <path class="circle-bg" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" id="healthCircle" stroke-dasharray="0, 100" d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage" id="healthScore">0%</text>
+                    </svg>
+                </div>
+                <p class="gauge-label">Heart Health Score</p>
+            </div>
+        </section>
+
+        <!-- Vitals Grid -->
+        <h3 class="section-heading">Recent Vitals</h3>
+        <section class="vitals-grid">
+            <div class="vital-card card-bp">
+                <div class="v-icon"><i class="fas fa-heartbeat"></i></div>
+                <div class="v-data">
+                    <span class="v-value" id="v_bp">--</span>
+                    <span class="v-unit">mmHg</span>
+                </div>
+                <p class="v-label">Blood Pressure</p>
+                <div class="v-status" id="s_bp">Normal</div>
+            </div>
+
+            <div class="vital-card card-chol">
+                <div class="v-icon"><i class="fas fa-tint"></i></div>
+                <div class="v-data">
+                    <span class="v-value" id="v_chol">--</span>
+                    <span class="v-unit">mg/dl</span>
+                </div>
+                <p class="v-label">Cholesterol</p>
+                <div class="v-status" id="s_chol">Good</div>
+            </div>
+
+            <div class="vital-card card-hr">
+                <div class="v-icon"><i class="fas fa-running"></i></div>
+                <div class="v-data">
+                    <span class="v-value" id="v_hr">--</span>
+                    <span class="v-unit">bpm</span>
+                </div>
+                <p class="v-label">Heart Rate</p>
+                <div class="v-status" id="s_hr">Resting</div>
+            </div>
+        </section>
+
+        <!-- History & Actions -->
+        <h3 class="section-heading">Actions</h3>
+        <div class="action-grid">
+            <a href="records.html?view=my" class="action-card">
+                <i class="far fa-file-alt"></i>
+                <span>View Full History</span>
+            </a>
+            <div onclick="downloadLatestReport()" class="action-card">
+                <i class="fas fa-download"></i>
+                <span>Download Report</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Chat Widget -->
+    <div id="chatWidget" class="chat-widget-fab" onclick="toggleChat()">
+        <i class="fas fa-robot"></i>
+        <span>Ask AI</span>
+    </div>
+    <div id="chatWindow" class="chat-window" style="display: none;">
+        <div class="chat-header">
+            <span><i class="fas fa-user-md"></i> CardioCare Assistant</span>
+            <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="msg bot">Hello! I can explain your health report or answer heart health questions. How can I
+                help?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChat(event)">
+            <button onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script src="JS/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadPatientDashboard);
+    </script>
+</body>
+
+</html>
