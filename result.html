@@ -228,6 +228,7 @@
 
   <script src="JS/app.js"></script>
   <script>
+    checkAuth(['Doctor', 'Patient']);
     document.addEventListener('DOMContentLoaded', () => {
       const data = JSON.parse(localStorage.getItem('lastResult'));
 
@@ -238,7 +239,7 @@
       document.getElementById('r_date').innerText = data.date || new Date().toLocaleDateString();
 
       // 2. Risk Box Logic
-      const isHighRisk = data.prediction === 1;
+      const isHighRisk = data.score > 50;
       const box = document.getElementById('riskBox');
       const circle = document.getElementById('riskCircle');
       const badge = document.getElementById('riskBadge');

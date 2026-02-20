@@ -56,6 +56,14 @@
             <label>Email</label>
             <input type="email" class="form-control" placeholder="john@example.com">
           </div>
+          <div class="input-group">
+            <label>Patient Username (For Login) *</label>
+            <input type="text" id="patientUsername" class="form-control" placeholder="johndoe123" required>
+          </div>
+          <div class="input-group">
+            <label>Patient Password (For Login) *</label>
+            <input type="password" id="patientPassword" class="form-control" placeholder="••••••••" required>
+          </div>
         </div>
       </div>
 
@@ -158,6 +166,9 @@
   </div>
 
   <script src="JS/app.js"></script>
+  <script>
+    checkAuth(['Doctor']);
+  </script>
 </body>
 
 </html>

@@ -33,7 +33,7 @@
 
     <!-- Dashboard Stats -->
     <div class="stats-row">
-      <div class="stat-card">
+      <div class="stat-card" id="totalPatientsCard">
         <div class="stat-num" id="totalPatients">1</div>
         <div class="stat-label">Total Patients</div>
       </div>
@@ -92,6 +92,9 @@
   </div>
 
   <script src="JS/app.js"></script>
+  <script>
+    checkAuth(['Doctor', 'Patient']);
+  </script>
 </body>
 
 </html>

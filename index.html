@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CardioAI - Doctor Login</title>
+    <title>CardioAI - Login</title>
     <link rel="stylesheet" href="CSS/style.css">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -19,28 +19,49 @@
 
         <div class="login-card">
             <div class="login-header">
-                <h2>Doctor Login</h2>
+                <h2 id="loginTitle">Doctor Login</h2>
                 <p style="color: var(--text-light); margin-bottom: 30px;">Enter your credentials to access the portal
                 </p>
             </div>
 
             <form onsubmit="event.preventDefault(); login();">
                 <div class="input-group">
-                    <label>Doctor ID</label>
-                    <input type="text" id="u" class="form-control" placeholder="Enter your ID">
+                    <label>Login As</label>
+                    <select id="role" class="form-control" onchange="updateLoginLabels()">
+                        <option value="Doctor">Doctor</option>
+                        <option value="Patient">Patient</option>
+                    </select>
                 </div>
-
+                <div class="input-group">
+                    <label id="usernameLabel">Doctor ID</label>
+                    <input type="text" id="u" class="form-control" placeholder="Enter your ID" required>
+                </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="p" class="form-control" placeholder="••••••••">
+                    <input type="password" id="p" class="form-control" placeholder="••••••••" required>
                 </div>
-
                 <button type="submit" class="btn-primary">Sign In</button>
             </form>
         </div>
     </div>
 
     <script src="JS/app.js"></script>
+    <script>
+        checkAuth(); // Redirects away if already logged in
+
+        function updateLoginLabels() {
+            const role = document.getElementById('role').value;
+            const label = document.getElementById('usernameLabel');
+            const title = document.getElementById('loginTitle');
+            if (role === 'Patient') {
+                label.innerText = 'Patient Username';
+                title.innerText = 'Patient Login';
+            } else {
+                label.innerText = 'Doctor ID';
+                title.innerText = 'Doctor Login';
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -2,8 +2,48 @@
 // Base URL for API
 const API_URL = 'http://127.0.0.1:5000';
 
+/* --- Authentication & Routing --- */
+function checkAuth(allowedRoles) {
+  const role = localStorage.getItem('currentRole');
+  const user = localStorage.getItem('currentUser');
+
+  // Exclude login page from redirecting constantly if not logged in
+  const isLoginPage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+
+  if (!user || !role) {
+    if (!isLoginPage) {
+      window.location.href = "index.html";
+    }
+    return;
+  }
+
+  // If we are on a protected page but don't have the right role
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    if (role === 'Doctor') {
+      window.location.href = 'home.html';
+    } else if (role === 'Patient') {
+      window.location.href = 'patient_dashboard.html';
+    }
+  }
+
+  // Remove predict option from navigation if patient
+  if (role === 'Patient') {
+    document.addEventListener('DOMContentLoaded', () => {
+      const predictLinks = document.querySelectorAll('a[href="predict.html"]');
+      predictLinks.forEach(link => link.style.display = 'none');
+    });
+  }
+}
+
+function logout() {
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('currentRole');
+  window.location.href = "index.html";
+}
+
 /* --- Login --- */
 async function login() {
+  const role = document.getElementById("role") ? document.getElementById("role").value : "Doctor";
   const u = document.getElementById("u").value;
   const p = document.getElementById("p").value;
 
@@ -11,11 +51,13 @@ async function login() {
     const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: u, password: p })
+      body: JSON.stringify({ username: u, password: p, role: role })
     });
 
     const data = await response.json();
     if (data.success) {
+      localStorage.setItem('currentUser', u);
+      localStorage.setItem('currentRole', role);
       window.location.href = data.redirect;
     } else {
       alert(data.message);
@@ -30,6 +72,9 @@ async function login() {
 async function predict() {
   // Gather form data
   const formData = {
+    p_name: document.getElementById('p_name').value,
+    patientUsername: document.getElementById('patientUsername') ? document.getElementById('patientUsername').value : "",
+    patientPassword: document.getElementById('patientPassword') ? document.getElementById('patientPassword').value : "",
     age: document.getElementById('age').value,
     sex: document.getElementById('sex').value,
     cp: document.getElementById('cp').value,
@@ -80,10 +125,8 @@ async function predict() {
       // Save for Result Page
       localStorage.setItem('lastResult', JSON.stringify(resultPacket));
 
-      // Save to History (Patient Records)
-      let records = JSON.parse(localStorage.getItem('patientRecords')) || [];
-      records.unshift(resultPacket); // Add new record to top
-      localStorage.setItem('patientRecords', JSON.stringify(records));
+      // The backend has now saved this directly to the SQLite Database
+      // We no longer push it manually to the 'patientRecords' array.
 
       window.location.href = "result.html";
     }
@@ -95,34 +138,54 @@ async function predict() {
 }
 
 /* --- Load Records (for records.html) --- */
-function loadRecords() {
+async function loadRecords() {
   const tableBody = document.getElementById('recordsTable');
   if (!tableBody) return; // Not on records page
 
-  const records = JSON.parse(localStorage.getItem('patientRecords')) || [];
-  const totalCount = document.getElementById('totalPatients');
-  const highCount = document.getElementById('highRiskCount');
-  const lowCount = document.getElementById('lowRiskCount');
+  try {
+    const response = await fetch(`${API_URL}/get_records`);
+    let records = await response.json();
 
-  // Update Stats
-  if (totalCount) totalCount.innerText = records.length;
-  if (highCount) highCount.innerText = records.filter(r => r.prediction === 1).length;
-  if (lowCount) lowCount.innerText = records.filter(r => r.prediction === 0).length;
+    const role = localStorage.getItem('currentRole');
+    const user = localStorage.getItem('currentUser');
 
-  // Clear and Populate Table
-  tableBody.innerHTML = '';
+    // Filter specifically for patients
+    if (role === 'Patient') {
+      records = records.filter(r => r.patient_username === user);
+      // Hide doctor metrics
+      const doctorBadges = document.querySelectorAll('.badge-pill');
+      if (doctorBadges.length > 0) doctorBadges[0].style.display = 'none';
 
-  if (records.length === 0) {
-    tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No records found.</td></tr>';
-    return;
-  }
+      const totalPatientsCard = document.getElementById('totalPatientsCard');
+      if (totalPatientsCard) totalPatientsCard.style.display = 'none';
+    }
 
-  records.forEach(r => {
-    const riskBadge = r.prediction === 1
-      ? '<span class="status-tag tag-high">High Risk</span>'
-      : '<span class="status-tag tag-low">Low Risk</span>';
+    // Save globally so viewRecord doesn't need to re-fetch
+    window.loadedPatientRecords = records;
 
-    const row = `
+    const totalCount = document.getElementById('totalPatients');
+    const highCount = document.getElementById('highRiskCount');
+    const lowCount = document.getElementById('lowRiskCount');
+
+    // Update Stats
+    if (totalCount) totalCount.innerText = records.length;
+    if (highCount) highCount.innerText = records.filter(r => r.score > 50).length;
+    if (lowCount) lowCount.innerText = records.filter(r => r.score <= 50).length;
+
+    // Clear and Populate Table
+    tableBody.innerHTML = '';
+
+    if (records.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No records found.</td></tr>';
+      return;
+    }
+
+    records.forEach(r => {
+      const riskBadge = r.score > 50
+        ? '<span class="status-tag tag-high">High Risk</span>'
+        : '<span class="status-tag tag-low">Low Risk</span>';
+
+      const row = `
             <tr>
                 <td>
                     <div style="display: flex; align-items: center; gap: 10px;">
@@ -146,25 +209,73 @@ function loadRecords() {
                 </td>
             </tr>
         `;
-    tableBody.innerHTML += row;
-  });
-}
-
-function viewRecord(id) {
-  const records = JSON.parse(localStorage.getItem('patientRecords')) || [];
-  const record = records.find(r => r.id === id);
-  if (record) {
-    localStorage.setItem('lastResult', JSON.stringify(record));
-    window.location.href = "result.html";
+      tableBody.innerHTML += row;
+    });
+  } catch (error) {
+    console.error("Error fetching records:", error);
+    tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Failed to fetch records. Make sure the server is running.</td></tr>';
   }
 }
 
+function viewRecord(id) {
+  try {
+    const records = window.loadedPatientRecords || [];
+    // Convert both to strings to ensure matching works perfectly
+    const record = records.find(r => String(r.id) === String(id));
+    if (record) {
+      localStorage.setItem('lastResult', JSON.stringify(record));
+      window.location.href = "result.html";
+    } else {
+      alert("Record not found! ID: " + id);
+    }
+  } catch (error) {
+    console.error("Error fetching record to view:", error);
+    alert("Could not load record. Is the server running?");
+  }
+}
+
+async function loadPatientDashboard() {
+  const loggedInUser = localStorage.getItem('currentUser');
+  if (!loggedInUser) return;
+
+  try {
+    const response = await fetch(`${API_URL}/get_records`);
+    const allRecords = await response.json();
+    const myRecords = allRecords.filter(r => r.patient_username === loggedInUser);
+
+    if (myRecords.length > 0) {
+      const latest = myRecords[0];
+      const pNameEl = document.getElementById('pName');
+      if (pNameEl) pNameEl.innerText = "Hello, " + latest.name;
+
+      const healthScoreEl = document.getElementById('healthScore');
+      if (healthScoreEl) healthScoreEl.innerText = latest.score + "%";
+
+      const circleEl = document.getElementById('healthCircle');
+      if (circleEl) {
+        circleEl.style.stroke = latest.score > 50 ? "#DC2626" : "#10B981";
+      }
+
+      const details = latest.details || {};
+      const vbp = document.getElementById('v_bp');
+      if (vbp && details.trestbps) vbp.innerText = details.trestbps;
+
+      const vchol = document.getElementById('v_chol');
+      if (vchol && details.chol) vchol.innerText = details.chol;
+
+      const vhr = document.getElementById('v_hr');
+      if (vhr && details.thalach) vhr.innerText = details.thalach;
+    }
+  } catch (error) {
+    console.error("Dashboard error:", error);
+  }
+}
+
+
+
 function deleteRecord(id) {
-  if (confirm("Are you sure you want to delete this record?")) {
-    let records = JSON.parse(localStorage.getItem('patientRecords')) || [];
-    records = records.filter(r => r.id !== id);
-    localStorage.setItem('patientRecords', JSON.stringify(records));
-    loadRecords(); // Refresh
+  if (confirm("Are you sure you want to delete this record (Local only)? Backend API not yet implemented for deletion.")) {
+    // Left empty for now, or implement backend delete endpoint
   }
 }
 
