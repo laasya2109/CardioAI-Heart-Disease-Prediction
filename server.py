@@ -163,5 +163,43 @@ def get_records():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_msg = request.json.get("message", "").lower()
+    
+    # Simple keyword-based bot
+    response = "I am an AI assistant here to help you understand your heart health. Feel free to ask me about diet, exercise, stress, or your recent vitals."
+    
+    if "stress" in user_msg or "anxiet" in user_msg or "worry" in user_msg:
+        response = "Chronic stress is bad for the heart. Try deep breathing, meditation, or hobbies you enjoy. If it feels overwhelming, talk to a professional."
+    elif "diet" in user_msg or "eat" in user_msg or "food" in user_msg or "meal" in user_msg:
+        response = "A heart-healthy diet is rich in fruits, vegetables, whole grains, and lean proteins. Try to limit saturated fats, sodium (<1.5g/day), and added sugars. Focus on leafy greens, berries, and omega-3 rich fish."
+    elif "exercise" in user_msg or "workout" in user_msg or "run" in user_msg or "fitness" in user_msg:
+        response = "Regular physical activity strengthens your heart muscle. Aim for at least 150 minutes of moderate aerobic exercise, like brisk walking, every week. Mix in some strength training too!"
+    elif "blood pressure" in user_msg or "bp" in user_msg or "hypertension" in user_msg:
+        response = "Normal blood pressure is generally around 120/80 mmHg. High blood pressure forces your heart to work harder. Keeping active, lowering salt intake, and managing stress helps."
+    elif "cholesterol" in user_msg:
+        response = "There are two main types: LDL (bad) and HDL (good). High LDL builds up in arteries. Eating soluble fiber like oats and beans can help lower LDL."
+    elif "sleep" in user_msg or "insomnia" in user_msg or "tired" in user_msg:
+        response = "Poor sleep is linked to high blood pressure and heart disease. Adults should aim for 7-9 hours of quality sleep per night. Try a consistent bedtime routine!"
+    elif "smoking" in user_msg or "smoke" in user_msg or "tobacco" in user_msg:
+        response = "Smoking is a major risk factor for heart disease. Quitting is one of the best things you can do for your cardiovascular health. There are many programs available to help!"
+    elif "alcohol" in user_msg or "drink" in user_msg:
+        response = "Drinking too much alcohol can raise your blood pressure and add extra calories, which may cause weight gain. If you drink, moderation is key!"
+    elif "weight" in user_msg or "obesity" in user_msg or "fat" in user_msg:
+        response = "Maintaining a healthy weight limits the strain on your heart and circulation. A balanced diet and regular exercise are the best ways to achieve this."
+    elif "sugar" in user_msg or "diabetes" in user_msg:
+        response = "High blood sugar can damage blood vessels and the nerves that control your heart. Managing carbohydrate intake and staying active is crucial."
+    elif "symptom" in user_msg or "pain" in user_msg or "chest" in user_msg:
+        response = "If you are experiencing severe chest pain, shortness of breath, or dizziness, please seek emergency medical attention immediately. I cannot provide medical diagnoses."
+    elif "heart attack" in user_msg:
+        response = "Symptoms of a heart attack can include chest pain, shortness of breath, cold sweat, or pain spreading to the arm or jaw. Call emergency services right away if you suspect this."
+    elif "water" in user_msg or "hydration" in user_msg:
+        response = "Staying hydrated makes it easier for your heart to pump blood. Aim to drink water consistently throughout the day, especially when exercising."
+    elif "hello" in user_msg or "hi" in user_msg or "hey" in user_msg:
+        response = "Hello there! I'm here to answer any questions you have about your cardiovascular health, diet, fitness, or stress."
+        
+    return jsonify({"reply": response})
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

@@ -281,3 +281,58 @@ function deleteRecord(id) {
 
 // Auto-load records if on records page
 document.addEventListener('DOMContentLoaded', loadRecords);
+
+// --- Chat Widget Logic ---
+function toggleChat() {
+  const chatWindow = document.getElementById('chatWindow');
+  if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+    chatWindow.style.display = 'flex';
+  } else {
+    chatWindow.style.display = 'none';
+  }
+}
+
+function handleChat(event) {
+  if (event.key === 'Enter') {
+    sendChat();
+  }
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msgText = input.value.trim();
+  if (!msgText) return;
+
+  // 1. Add User Message to UI
+  appendChatMessage(msgText, 'user');
+  input.value = '';
+
+  // 2. Fetch AI Reply from Backend
+  try {
+    const response = await fetch(`${API_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msgText })
+    });
+    const data = await response.json();
+
+    // 3. Add Bot Reply to UI
+    if (data.reply) {
+      appendChatMessage(data.reply, 'bot');
+    }
+  } catch (error) {
+    console.error("Chat Error:", error);
+    appendChatMessage("Sorry, I'm having trouble connecting to the server.", 'bot');
+  }
+}
+
+function appendChatMessage(text, sender) {
+  const chatBody = document.getElementById('chatBody');
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `msg ${sender}`;
+  msgDiv.innerText = text;
+  chatBody.appendChild(msgDiv);
+
+  // Auto-scroll downwards
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
