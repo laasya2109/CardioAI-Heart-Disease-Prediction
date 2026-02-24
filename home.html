@@ -79,6 +79,20 @@
         </div>
       </div>
 
+      <!-- Upcoming Appointments Grid (Doctor View) -->
+      <div style="margin-top: 50px;">
+        <h2 style="color: var(--secondary); margin-bottom: 20px; text-align: center;"><i class="far fa-calendar-check"
+            style="color: var(--primary);"></i> Scheduled Consultations</h2>
+        <div id="doctorAppointmentsContainer"
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+          <!-- Appointments will be loaded here -->
+          <div style="text-align: center; grid-column: 1 / -1; color: var(--text-light); padding: 20px;">Loading
+            appointments...</div>
+        </div>
+      </div>
+
+
+
     </div>
 
     <!-- Footer Stats -->
@@ -107,6 +121,7 @@
   <script src="JS/app.js"></script>
   <script>
     checkAuth(['Doctor']);
+    document.addEventListener('DOMContentLoaded', loadAppointments);
   </script>
 </body>
 

@@ -29,6 +29,35 @@ def init_db():
             FOREIGN KEY(patient_username) REFERENCES Users(username)
         )
     ''')
+
+    # Create Appointments Table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS Appointments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            patient_username TEXT NOT NULL,
+            patient_name TEXT NOT NULL,
+            appointment_date TEXT NOT NULL,
+            appointment_time TEXT NOT NULL,
+            reason TEXT NOT NULL,
+            status TEXT DEFAULT 'Scheduled',
+            FOREIGN KEY(patient_username) REFERENCES Users(username)
+        )
+    ''')
+
+    # Create Prescriptions Table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS Prescriptions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            patient_username TEXT NOT NULL,
+            doctor_username TEXT NOT NULL,
+            medication TEXT NOT NULL,
+            dosage TEXT NOT NULL,
+            frequency TEXT NOT NULL,
+            date TEXT NOT NULL,
+            FOREIGN KEY(patient_username) REFERENCES Users(username)
+        )
+    ''')
+
     
     # Insert default doctor if not exists
     c.execute("SELECT * FROM Users WHERE username='doctor'")

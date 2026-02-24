@@ -82,11 +82,51 @@
             <td><span class="status-tag tag-low">Low Risk</span></td>
             <td>24%</td>
             <td>12/29/2025</td>
-            <td><button style="border: none; background: none; color: var(--text-light); cursor: pointer;"><i
-                  class="fas fa-ellipsis-v"></i></button></td>
+            <td>
+              <button onclick="openPrescriptionModal('johndoe123', 'John Doe')" class="btn-primary"
+                style="padding: 6px 12px; font-size: 0.85rem; border-radius: 20px;">
+                <i class="fas fa-plus"></i> Prescription
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Prescription Modal -->
+    <div id="prescriptionModal" class="hidden"
+      style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+      <div
+        style="background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="color: var(--secondary);"><i class="fas fa-pills" style="color: var(--primary);"></i> Add
+            Prescription</h3>
+          <button onclick="closePrescriptionModal()"
+            style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-light);"><i
+              class="fas fa-times"></i></button>
+        </div>
+
+        <input type="hidden" id="prescPatientUsername">
+        <div style="margin-bottom: 15px; font-size: 0.95rem; color: var(--text-light);">
+          Patient: <strong id="prescPatientName" style="color: var(--text-main);"></strong>
+        </div>
+
+        <div class="input-group">
+          <label>Medication Name</label>
+          <input type="text" id="prescMedication" class="form-control" placeholder="e.g. Aspirin 81mg" required>
+        </div>
+        <div class="input-group">
+          <label>Dosage</label>
+          <input type="text" id="prescDosage" class="form-control" placeholder="e.g. 1 Tablet" required>
+        </div>
+        <div class="input-group">
+          <label>Frequency</label>
+          <input type="text" id="prescFrequency" class="form-control" placeholder="e.g. Once daily with food" required>
+        </div>
+
+        <button onclick="submitPrescription()" class="btn-primary" style="margin-top: 10px; width: 100%;">Save
+          Prescription</button>
+      </div>
     </div>
 
   </div>

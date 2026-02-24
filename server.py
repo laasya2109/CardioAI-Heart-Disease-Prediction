@@ -163,6 +163,108 @@ def get_records():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/schedule_appointment', methods=['POST'])
+def schedule_appointment():
+    try:
+        data = request.json
+        patient_username = data.get('patientUsername')
+        patient_name = data.get('patientName')
+        date = data.get('date')
+        time = data.get('time')
+        reason = data.get('reason')
+
+        if not all([patient_username, patient_name, date, time, reason]):
+            return jsonify({"success": False, "error": "Missing required fields"}), 400
+
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO Appointments (patient_username, patient_name, appointment_date, appointment_time, reason) VALUES (?, ?, ?, ?, ?)",
+                  (patient_username, patient_name, date, time, reason))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"Appointment Error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/get_appointments', methods=['GET'])
+def get_appointments():
+    try:
+        conn = sqlite3.connect('database.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        # Order by closest date first
+        c.execute("SELECT * FROM Appointments ORDER BY appointment_date ASC, appointment_time ASC")
+        rows = c.fetchall()
+        conn.close()
+        
+        appointments = []
+        for r in rows:
+            appointments.append({
+                "id": r["id"],
+                "patient_username": r["patient_username"],
+                "patient_name": r["patient_name"],
+                "appointment_date": r["appointment_date"],
+                "appointment_time": r["appointment_time"],
+                "reason": r["reason"],
+                "status": r["status"]
+            })
+        return jsonify(appointments)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/add_prescription', methods=['POST'])
+def add_prescription():
+    try:
+        data = request.json
+        patient_username = data.get('patientUsername')
+        doctor_username = data.get('doctorUsername', 'doctor')
+        medication = data.get('medication')
+        dosage = data.get('dosage')
+        frequency = data.get('frequency')
+        date_str = datetime.now().strftime("%m/%d/%Y")
+
+        if not all([patient_username, medication, dosage, frequency]):
+            return jsonify({"success": False, "error": "Missing required fields"}), 400
+
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("INSERT INTO Prescriptions (patient_username, doctor_username, medication, dosage, frequency, date) VALUES (?, ?, ?, ?, ?, ?)",
+                  (patient_username, doctor_username, medication, dosage, frequency, date_str))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success": True})
+    except Exception as e:
+        print(f"Prescription Error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/get_prescriptions', methods=['GET'])
+def get_prescriptions():
+    try:
+        conn = sqlite3.connect('database.db')
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        c.execute("SELECT * FROM Prescriptions ORDER BY id DESC")
+        rows = c.fetchall()
+        conn.close()
+        
+        prescriptions = []
+        for r in rows:
+            prescriptions.append({
+                "id": r["id"],
+                "patient_username": r["patient_username"],
+                "doctor_username": r["doctor_username"],
+                "medication": r["medication"],
+                "dosage": r["dosage"],
+                "frequency": r["frequency"],
+                "date": r["date"]
+            })
+        return jsonify(prescriptions)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/chat', methods=['POST'])
 def chat():
     user_msg = request.json.get("message", "").lower()

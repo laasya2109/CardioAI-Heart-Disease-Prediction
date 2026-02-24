@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioAI - Schedule Appointment</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="patient_dashboard.html" class="logo"><i class="fas fa-heartbeat"></i> CardioAI</a>
+        <div class="nav-links">
+            <a href="patient_dashboard.html" class="nav-item"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="records.html?view=my" class="nav-item"><i class="far fa-file-alt"></i> History</a>
+            <a href="#" onclick="logout()" class="nav-btn">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 600px; margin-top: 50px;">
+        <div
+            style="background: white; border-radius: 12px; padding: 40px; box-shadow: 0 10px 30px rgba(18, 194, 233, 0.08);">
+            <h2 style="color: var(--secondary); margin-bottom: 10px; text-align: center;"><i
+                    class="fas fa-calendar-check" style="color: var(--primary);"></i> Schedule Consultation</h2>
+            <p style="color: var(--text-light); text-align: center; margin-bottom: 30px;">Book a follow-up appointment
+                with a cardiologist regarding your recent assessment.</p>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="input-group">
+                    <label style="margin-bottom: 8px;"><i class="far fa-calendar-alt"
+                            style="color: var(--primary); margin-right: 5px;"></i> Preferred Date</label>
+                    <input type="date" id="appDate" class="form-control" required>
+                </div>
+
+                <div class="input-group">
+                    <label style="margin-bottom: 8px;"><i class="far fa-clock"
+                            style="color: var(--primary); margin-right: 5px;"></i> Preferred Time</label>
+                    <input type="time" id="appTime" class="form-control" required>
+                </div>
+
+                <div class="input-group">
+                    <label style="margin-bottom: 8px;"><i class="fas fa-notes-medical"
+                            style="color: var(--primary); margin-right: 5px;"></i> Reason for Visit</label>
+                    <textarea id="appReason" class="form-control" rows="4"
+                        placeholder="Briefly describe why you are scheduling this appointment (e.g., High risk score, chest pain, routine checkup)..."
+                        required style="resize: vertical; min-height: 100px;"></textarea>
+                </div>
+
+                <button onclick="scheduleAppointment()" class="btn-primary"
+                    style="margin-top: 20px; font-size: 1.15rem; padding: 16px;">
+                    Confirm Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="JS/app.js"></script>
+    <script>
+        checkAuth(['Patient']);
+        // Set minimum date to today
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('appDate').min = today;
+        });
+    </script>
+</body>
+
+</html>
